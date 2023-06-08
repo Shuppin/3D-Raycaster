@@ -6,7 +6,12 @@ Also included is a small minimap that gives a 2D representation of exactly what 
 
 ---
 
-### Running the program
+## Demo
+https://github.com/Shuppin/3D-Raycaster/assets/72602326/d21948bd-e100-4d29-8e31-150e600730a2
+
+---
+
+## Running the program
 
 To run the program from source, follow these simple steps:
 
@@ -17,18 +22,22 @@ To run the program from source, follow these simple steps:
 
 That's it! You should now be able to play with this simple raycaster.
 
-### Controls
+---
 
-The controls follow basic WASD movement keys.
+## Controls
 
-The `X` key will toggle the height of the walls, demonstrating that only a single row of rays are being casted.
+Use `WASD` to move and rotate the camera.
 
-### How it works
+The `X` key will toggle the height of the walls, this feature is useful to visually explain that the raycasting is only being performed on a single row of pixels.
 
-#### Map
+---
+
+## How it works
+
+### Map
 The map is stored as a 2D array of integers, each number either representing an empty space (0), or a colour (1-5)
  
-#### Camera
+### Camera
 <img align="right" width="240" height="240" src="img/cam.png">
 The camera is made up of a position, direction vector and a plane vector.
 
@@ -36,13 +45,13 @@ The camera is made up of a position, direction vector and a plane vector.
 - (dir)ection is another x, y vector which represents, you guessed it, the direction of the camera. The magnitude of this vector also represents the focal length
 - plane is another x,y vector and that represents the width of the camera plane. The camera plane defines how wide the field of view should be.
  
-#### DDA Raycasting Algorithm
+### DDA Raycasting Algorithm
 
 I highly recommend watching [this](https://www.youtube.com/watch?v=NbSee-XM7WA) video explaining how the algorithm works.
 
 The DDA Ray casting algorithm is a very an efficient way to render a scene on the screen. Instead of casting a ray for every individual pixel, we cast a ray for each column of pixels. This approach significantly reduces the amount of rays required.
 
-#### 3D Visualisation
+### 3D Visualisation
 
 As the ray travels, it intersects with the boundaries of a grid. At each intersection, we check the value of the corresponding grid cell. If the value is greater than 0, we know that a wall should be drawn, and its color will be determined by the value of that grid cell. To represent this, we draw a single pixel at the location where the ray intersects the grid boundary.
 

@@ -8,9 +8,8 @@ Also included is a small minimap that gives a 2D representation of exactly what 
 &nbsp;
 
 ## Demo
-(new demo pending)
 
-https://github.com/Shuppin/3D-Raycaster/assets/72602326/d21948bd-e100-4d29-8e31-150e600730a2
+https://github.com/Shuppin/3D-Raycaster/assets/72602326/342fa55a-f70f-4cc4-9919-87165f1f5c54
 
 &nbsp;
 

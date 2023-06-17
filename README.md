@@ -47,7 +47,8 @@ As you may have noticed, this project is programmed in Python, you may have also
 The map is stored as a 2D array of integers, each number either representing an empty space (0), or a colour (1-5)
 
 ### Camera
-<img align="right" width="240" height="240" src="pending">
+
+<img align="right" width="240" height="240" src="https://github.com/Shuppin/3D-Raycaster/assets/72602326/b0aeef8a-990e-408d-a12c-496abc14dd0b">
 The camera is made up of a position, direction vector and a plane vector.
 
 - (pos)ition is a simple x, y vector and is directly representative of the position on the map (i.e. 0,0 is the top left of the map and mapWidth, mapHeight is the bottom right of the map)

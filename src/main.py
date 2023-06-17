@@ -1,52 +1,66 @@
 import math
-from pyray import *
+
+from pyray      import *
+from texture    import load_textures
 
 # Initialisation -----------------------------------------------------------------------
-screenWidth = 1300
-screenHeight = 960
 
-moveSpeed = 6
-rotSpeed = 3
+# Render settings
+renderWidth = 325
+renderHeight = 240
+windowScale = 4
+screenWidth = int(renderWidth*windowScale)
+screenHeight = int(renderHeight*windowScale)
 
-wallHeight = 2
+textureWidth = 64
+textureHeight = 64
+textures = load_textures(textureWidth, textureHeight)
+
+wallHeight = 1
 
 floorColour = ( 130, 130, 130, 255 )
 ceilColour = ( 80, 80, 80, 255 )
 
 worldMap = [
-  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,5,5,0,0,0,0,0,0,0,0,0,0,4,4,0,4,4,0,0,0,0,1],
-  [1,0,5,5,0,0,0,0,0,0,0,0,0,0,4,0,0,0,4,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,1,0,0,0,0,0,4,0,5,0,4,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,1,0,0,0,0,0,4,0,0,0,4,0,0,0,0,1],
-  [1,0,0,0,0,0,0,1,0,0,0,0,0,0,4,4,0,4,4,0,0,0,0,1],
-  [1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,3,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,3,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,5,0,0,0,0,1],
-  [1,0,1,1,0,1,1,0,2,0,0,0,0,0,0,0,0,0,5,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,5,0,0,0,0,1],
-  [1,0,4,0,4,0,4,0,4,0,0,0,0,0,0,0,0,5,0,5,0,0,0,1],
-  [1,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,3,3,0,3,3,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,1,0,1,0,2,0,3,0,4,0,5,0,6,0,5,1],
-  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+  [6,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+  [6,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [6,0,4,7,0,0,0,0,0,0,0,0,0,0,4,4,0,4,4,0,0,0,0,1],
+  [6,0,6,5,0,0,0,0,0,0,0,0,0,0,4,0,0,0,4,0,0,0,0,1],
+  [6,0,0,0,0,0,0,0,1,0,0,0,0,0,4,0,5,0,4,0,0,0,0,1],
+  [6,0,0,0,0,0,0,0,1,0,0,0,0,0,4,0,0,0,4,0,0,0,0,1],
+  [6,0,0,0,0,0,0,1,0,0,0,0,0,0,4,4,0,4,4,0,0,0,0,1],
+  [6,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [6,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,3,0,0,0,1],
+  [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,1],
+  [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,3,0,0,0,1],
+  [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [6,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [6,0,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,0,5,0,0,0,0,1],
+  [6,0,1,1,0,1,1,0,6,0,0,0,0,0,0,0,0,0,5,0,0,0,0,1],
+  [6,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,5,0,0,0,0,1],
+  [6,0,4,0,4,0,4,0,4,0,0,0,0,0,0,0,0,5,0,5,0,0,0,1],
+  [6,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [6,0,3,3,0,3,3,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [6,0,0,0,0,0,0,0,1,0,1,0,2,0,3,0,4,0,5,0,6,0,7,1],
+  [8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,1]
 ];
 
 # Dev settings
 showWallHeight = True
 wallHeightOverridepx = 20
-minimapSize = 300
+moveSpeed = 6
+rotSpeed = 3
+pixelsDrawn = 0
 
-minimapCellSizeX = int(minimapSize/len(worldMap[0]))
-minimapCellSizeY = int(minimapSize/len(worldMap))
+# Minimap settings
+minimapBorderThicknesspx = 5
+minimapTargetSize = int(screenWidth/5)
+minimapActualSize = int(minimapTargetSize/len(worldMap))*len(worldMap)
+minimapCellSizeX = int(minimapTargetSize/len(worldMap[0]))
+minimapCellSizeY = int(minimapTargetSize/len(worldMap))
 
 # Camera settings
 posX, posY = 22, 12  # x and y position of the player
@@ -58,21 +72,29 @@ init_window(screenWidth, screenHeight, "3D Raycasting")
 set_target_fps(60)
 # --------------------------------------------------------------------------------------
 
-def get_colour(i):
+def get_colour(i) -> tuple[int, int, int, int]:
+    """
+    Returns the RGBA value which corresponds to the integer values found in worldMap
+    """
     match i:
-        case 1: colour = RED
+        case 1: colour = BLUE
         case 2: colour = GREEN
-        case 3: colour = BLUE
+        case 3: colour = GRAY
         case 4: colour = PURPLE
-        case 5: colour = YELLOW
+        case 5: colour = RED
+        case 6: colour = MAROON
+        case 7: colour = PINK
+        case 8: colour = YELLOW
         case _: colour = BLACK
         
     return colour
 
 
 while not window_should_close():
+
+    pixelsDrawn = 0
     
-    # Update -------------------------------------------------------------------------------
+    # Movement -----------------------------------------------------------------------------
     dt = get_frame_time()
     actualMoveSpeed = moveSpeed * dt
     actualRotSpeed = rotSpeed * dt
@@ -113,14 +135,36 @@ while not window_should_close():
         oldPlaneX = planeX
         planeX = planeX * math.cos(-actualRotSpeed) - planeY * math.sin(-actualRotSpeed)
         planeY = oldPlaneX * math.sin(-actualRotSpeed) + planeY * math.cos(-actualRotSpeed)
+    # --------------------------------------------------------------------------------------
+
+    begin_drawing() # Begin drawing to back buffer
+
+    # Raycating code -----------------------------------------------------------------------
+
+    # Not actually needed if the every pixel is re-drawn
+    #clear_background(BLACK)
+
+    # Draw ceiling
+    draw_rectangle(
+        0,0,
+        screenWidth, int(screenHeight/2),
+        ceilColour
+    )
+
+    # Draw floor
+    draw_rectangle(
+        0, int(screenHeight/2),
+        screenWidth, int(screenHeight/2),
+        floorColour
+    )
 
     # Array used to pass rendering data from the update loop to the draw loop
-    columnData = []
+    minimapData = []
 
     # Loop through every column
-    for columnIndex in range(screenWidth):
+    for columnIndex in range(renderWidth+1):
         # Calculate camera position, note we don't need a cameraY
-        cameraX = 2 * columnIndex / screenWidth - 1
+        cameraX = 2 * columnIndex / renderWidth - 1
         # Calculate the position of the ray direction vector by offsetting the camera position
         rayDirX = dirX + planeX * cameraX
         rayDirY = dirY + planeY * cameraX
@@ -203,39 +247,74 @@ while not window_should_close():
             rayIntersectionX = posX
             rayIntersectionY = posY
 
+        # Identify the value of the cell the ray intersected with
+        textureNum = worldMap[mapX][mapY] - 1
+
+        # Convert intersection into local coordinates (relative to the current wall)
+        if side == 0:
+            wallX = rayIntersectionY - math.floor(rayIntersectionY)
+        else:
+            wallX = rayIntersectionX - math.floor(rayIntersectionX)
+
+        # Map x-coordinate of wall intersection to x-coordinate of texture file
+        textureX = int(wallX * textureWidth)
+        textureX = textureWidth - textureX - 1
+
         if showWallHeight:
             # Calculate the height of the line we need to draw
-            lineHeight = int(screenHeight * wallHeight / perpendicularWallDist)
+            lineHeight = int(renderHeight * wallHeight / perpendicularWallDist)
         else:
-            lineHeight = wallHeightOverridepx
+            lineHeight = max(int(windowScale/wallHeightOverridepx), 1)
 
         # Calculate the top and bottom position of the line, truncating
         # the values if they exceed the boundraries of the window
-        drawStart = int(-lineHeight / 2 + screenHeight / 2)
+        drawStart = int(-lineHeight / 2 + renderHeight / 2)
         if drawStart < 0:
             drawStart = 0
-        drawEnd = int(lineHeight / 2 + screenHeight / 2)
-        if drawEnd >= screenHeight:
-            drawEnd = screenHeight-1
+        drawEnd = int(lineHeight / 2 + renderHeight / 2)
+        if drawEnd >= renderHeight:
+            drawEnd = renderHeight
 
-        # Calculate which colour to draw the line
-        colour = get_colour(worldMap[mapX][mapY])
+        # Pixel code
 
-        # If the wall is in the y direction, halve it's colour value
-        if side == 1:
-            colour = (
-                int(colour[0]/2),
-                int(colour[1]/2),
-                int(colour[2]/2),
-                colour[3],
+        # How much to increase the texture position per screen pixel
+        step = textureHeight / lineHeight
+        # Calculate intial starting coordinate
+        texturePos = (drawStart - (renderHeight / 2) + (lineHeight / 2)) * step
+        for y in range(drawStart, drawEnd):
+            textureY = int(texturePos)
+            texturePos += step
+            # Select the colour
+            colour = textures[textureNum][textureHeight * textureY + textureX]
+
+            # If the wall is in the y direction, halve it's colour value
+            if side == 1:
+                colour = (
+                    int(colour[0]/2),
+                    int(colour[1]/2),
+                    int(colour[2]/2),
+                    colour[3],
+                )
+
+            # Draw the pixel
+            draw_rectangle(
+                columnIndex*windowScale, y*windowScale,
+                windowScale, windowScale,
+                colour
             )
 
+            pixelsDrawn += 1
+
         # Add ray information to array
-        columnData.append((drawStart, drawEnd, rayIntersectionX, rayIntersectionY, colour))
+        minimapData.append((rayIntersectionX, rayIntersectionY))
+
+    # --------------------------------------------------------------------------------------
+    
+    # Minimap code -------------------------------------------------------------------------
 
     # The offset of the minimap
-    minimapOffsetX = screenWidth-minimapSize
-    minimapOffsetY = screenHeight-minimapSize
+    minimapOffsetX = screenWidth-minimapTargetSize
+    minimapOffsetY = screenHeight-minimapTargetSize
 
     # The position of the player position transformed onto the minimap
     scaledPosX = minimapOffsetX+int(posY*minimapCellSizeX)
@@ -256,37 +335,15 @@ while not window_should_close():
     scaledPlaneLX = scaledDirX-int(planeY*cameraVisualisationScale*minimapCellSizeX)
     scaledPlaneLY = scaledDirY-int(planeX*cameraVisualisationScale*minimapCellSizeY)
     # --------------------------------------------------------------------------------------
-    
-    # Draw ---------------------------------------------------------------------------------
-    begin_drawing()
 
-    clear_background(BLACK)
-
-    # Draw ceiling
+    # Draw minimap outline
     draw_rectangle(
-        0,0,
-        screenWidth, int(screenHeight/2),
-        ceilColour
+        minimapOffsetX-minimapBorderThicknesspx,
+        minimapOffsetY-minimapBorderThicknesspx,
+        minimapActualSize+minimapBorderThicknesspx*2,
+        minimapActualSize+minimapBorderThicknesspx*2,
+        BLACK
     )
-
-    # Draw floor
-    draw_rectangle(
-        0, int(screenHeight/2),
-        screenWidth, int(screenHeight/2),
-        floorColour
-    )
-    
-    # Draw each pixel column
-    for columnIndex in range(len(columnData)):
-        data = columnData[columnIndex]
-        draw_line_ex(
-            (columnIndex, data[0]),
-            (columnIndex, data[1]),
-            1,
-            data[4]
-        )
-
-    # Minimap code
 
     # Draw level onto minimap
     for row in range(len(worldMap)):
@@ -300,12 +357,12 @@ while not window_should_close():
             )
 
     # Draw FOV cone
-    for columnIndex in range(1, len(columnData)-1):
-        data = columnData[columnIndex]
+    for columnIndex in range(1, len(minimapData)-1):
+        data = minimapData[columnIndex]
         draw_line_ex(
             (
-                minimapOffsetX+int((data[3])*minimapCellSizeX),
-                minimapOffsetY+int(data[2]*minimapCellSizeX)
+                minimapOffsetX+int((data[1])*minimapCellSizeX),
+                minimapOffsetY+int(data[0]*minimapCellSizeX)
             ),
             (scaledPosX, scaledPosY),
             1.5,
@@ -313,11 +370,11 @@ while not window_should_close():
         )
 
     # draw left FOV cone edge
-    data = columnData[0]
+    data = minimapData[0]
     draw_line_ex(
         (
-            minimapOffsetX+int((data[3])*minimapCellSizeX),
-            minimapOffsetY+int(data[2]*minimapCellSizeX)
+            minimapOffsetX+int((data[1])*minimapCellSizeX),
+            minimapOffsetY+int(data[0]*minimapCellSizeX)
         ),
         (scaledPosX, scaledPosY),
         3,
@@ -325,11 +382,11 @@ while not window_should_close():
     )
 
     # draw right FOV cone edge
-    data = columnData[len(columnData)-1]
+    data = minimapData[len(minimapData)-1]
     draw_line_ex(
         (
-            minimapOffsetX+int((data[3])*minimapCellSizeX),
-            minimapOffsetY+int(data[2]*minimapCellSizeX)
+            minimapOffsetX+int((data[1])*minimapCellSizeX),
+            minimapOffsetY+int(data[0]*minimapCellSizeX)
         ),
         (scaledPosX, scaledPosY),
         3,
@@ -385,7 +442,9 @@ while not window_should_close():
         BLUE
     )
 
-    # Text overlay
+    # --------------------------------------------------------------------------------------
+
+    # Text title ---------------------------------------------------------------------------
     draw_text(
         f"3D Raycasting | {int(1/dt) if dt > 0 else 'inf'} FPS",
         20,
@@ -393,8 +452,28 @@ while not window_should_close():
         20,
         WHITE
     )
-
-    end_drawing()
     # --------------------------------------------------------------------------------------
+
+    # Stats code ---------------------------------------------------------------------------
+    stats = [
+        f"pos: ({posX:.2f}, {posY:.2f})",
+        f"dir: ({dirX:.2f}, {dirY:.2f})",
+        f"res: {renderHeight}x{renderWidth}",
+        f"pixel_scale: {windowScale}px",
+        f"#px: {pixelsDrawn}",
+    ]
+
+    for i, stat in enumerate(stats[::-1]):
+        draw_text(
+            stat,
+            20,
+            screenHeight-((i+2)*20),
+            20,
+            WHITE
+        )
+    # --------------------------------------------------------------------------------------
+
+
+    end_drawing()  # Swap buffers
 
 close_window()

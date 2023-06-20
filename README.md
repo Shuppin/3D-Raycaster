@@ -32,6 +32,8 @@ Use `WASD` to move and rotate the camera.
 
 The `X` key will toggle the height of the walls, this feature is useful to visually explain that the raycasting is only being performed on a single row of pixels.
 
+The `M` key will render the current frame with a slight delay per pixel, allowing you to see how to algorithm works in slow motion. You can increase/decrease this delay using the `[` and `]` keys.
+
 &nbsp;
 
 ## Performance considerations

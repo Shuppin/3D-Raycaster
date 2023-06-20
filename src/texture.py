@@ -31,7 +31,7 @@ def load_textures(textureWidth, textureHeight, dir='img/') -> list[tuple[int, in
             continue
         except Exception as err_msg:
             # Covers any edge cases, a texture failing to load shouldn't be fatal.
-            print(f"Error reading file '{filename}' - {err_msg}")
+            print(f"WARN: Could not read file '{filename}' - {err_msg}")
 
         img = img.resize((textureWidth, textureHeight))  # Resize the image to 64x64
 
